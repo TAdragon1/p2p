@@ -10,7 +10,7 @@ public class HeartbeatTimer implements Runnable {
 
     private static long NO_DELAY = 0;
     private static long FIVE_SECONDS = 5000;
-    private static long SIXTY_SECONDS = 60000;
+    private static long TIMEOUT = 60000;
 
     public HeartbeatTimer(Socket connectionSocket, PriorityQueue<Message> outgoingMessages, Object someObject){
         this.connectionSocket = connectionSocket;
@@ -25,7 +25,7 @@ public class HeartbeatTimer implements Runnable {
             timer.schedule(new HeartbeatTask(outgoingMessages), NO_DELAY);
             long start = System.currentTimeMillis();
             CloseSocketTask closeSocketTask = new CloseSocketTask(connectionSocket, someObject);
-            timer.schedule(closeSocketTask, SIXTY_SECONDS);
+            timer.schedule(closeSocketTask, TIMEOUT);
 
             while (true) {
                 someObject.wait();
@@ -46,7 +46,7 @@ public class HeartbeatTimer implements Runnable {
                     timer.schedule(new HeartbeatTask(outgoingMessages), delay);
                     start = System.currentTimeMillis();
                     closeSocketTask = new CloseSocketTask(connectionSocket, someObject);
-                    timer.schedule(closeSocketTask, SIXTY_SECONDS);
+                    timer.schedule(closeSocketTask, TIMEOUT);
                 }
                 else{
                     // TODO Socket is closed. Cleanup?

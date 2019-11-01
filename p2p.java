@@ -18,7 +18,7 @@ public class p2p {
     // Client Sockets
     private static LinkedList<Socket> neighbors = new LinkedList<>();
 
-    // Neighbor IPs
+    // Neighbor Hostnames
     private static List<String> neighborHostnames = readInNeighbors();
 
     // Files
@@ -31,9 +31,7 @@ public class p2p {
     private static String peer_IP;
     private static AtomicInteger queryNum = new AtomicInteger(0);
 
-    private static List<String> sentQueries = new LinkedList<>();
-
-    private static PriorityQueue<Message> peerWideForwarding = new PriorityQueue<>();
+//    private static List<String> sentQueries = new LinkedList<>();
 
     private static Comparator<Message> messageComparator = new Comparator<Message>() {
         @Override
@@ -41,6 +39,9 @@ public class p2p {
             return m1.getPriority() - m2.getPriority();
         }
     };
+
+    private static int INITIAL_CAPACITY = 10;
+    private static PriorityQueue<Message> peerWideForwarding = new PriorityQueue<>(INITIAL_CAPACITY, messageComparator);
 
     public static void main(String[] args){
         Scanner scan;
@@ -85,16 +86,33 @@ public class p2p {
                             }
                         }
 
-
                         List<PriorityQueue<Message>> neighborOutgoingQueues = new LinkedList<>();
                         for(Socket neighbor : neighbors){
                             // TODO create all threads per neighbor
+                            PriorityQueue<Message> neighborOutgoingMessages =
+                                    new PriorityQueue<>(INITIAL_CAPACITY, messageComparator);
+                            HashSet<String> neighborSentLog = new HashSet<>();
+                            WriterThread neighborWriter =
+                                    new WriterThread(neighbor, neighborOutgoingMessages, neighborSentLog);
+                            Thread neighborWriterThread = new Thread(neighborWriter);
 
+                            Object heartbeatObject = new Object();
+                            String peerFileTransferIP = fileXferAddress.getHostAddress();
+                            String peerFileTransferPort = String.valueOf(fileXferPort);
+                            ReaderThread neighborReader =
+                                    new ReaderThread(neighbor, neighborOutgoingMessages, heartbeatObject, localFiles,
+                                            peer_IP, peerFileTransferIP, peerFileTransferPort, peerWideForwarding);
+                            Thread neighborReaderThread = new Thread(neighborReader);
+
+                            HeartbeatTimer neighborHeartbeatTimer =
+                                    new HeartbeatTimer(neighbor, neighborOutgoingMessages, heartbeatObject);
+                            Thread neighborHeartbeatTimerThread = new Thread(neighborHeartbeatTimer);
+
+                            neighborOutgoingQueues.add(neighborOutgoingMessages);
                         }
 
                         /* TODO Create a thread to check peerWideForwarding
-                        * and add item from queue to each neighbor's outgoing queue
-                        */
+                             and add item from queue to each neighbor's outgoing queue */
 
                         break;
                     case "get":
@@ -103,7 +121,7 @@ public class p2p {
                         System.out.println("DEBUG: Get case " + fileName);
 
                         String queryID = peer_IP + "-" + String.valueOf(queryNum);
-                        sentQueries.add(queryID);
+//                        sentQueries.add(queryID);
                         queryNum.incrementAndGet();
 
                         // query format: "Q:(query ID);(file name)"
