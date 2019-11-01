@@ -5,10 +5,9 @@ import java.util.PriorityQueue;
 public class WriterThread implements Runnable {
 
     private Socket connectionSocket;
-    private PriorityQueue<String> outgoingMessages;
+    private PriorityQueue<Message> outgoingMessages;
 
-
-    public WriterThread(Socket connectionSocket, PriorityQueue<String> outgoingMessages){
+    public WriterThread(Socket connectionSocket, PriorityQueue<Message> outgoingMessages){
         this.connectionSocket = connectionSocket;
         this.outgoingMessages = outgoingMessages;
 
@@ -24,9 +23,9 @@ public class WriterThread implements Runnable {
                     outgoingMessages.wait();
                 }
 
-                String message = outgoingMessages.remove();
+                Message message = outgoingMessages.remove();
 
-                outToClient.writeBytes(message + "\n");
+                outToClient.writeBytes(message.getMessage() + "\n");
             }
         }
         catch (Exception e){
