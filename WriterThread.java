@@ -9,10 +9,13 @@ public class WriterThread implements Runnable {
     private PriorityQueue<Message> outgoingMessages;
     private HashSet<String> sentLog;
 
-    public WriterThread(Socket connectionSocket, PriorityQueue<Message> outgoingMessages){
+    private static String HEART = "Heart";
+    private static String BEAT = "beat";
+
+    public WriterThread(Socket connectionSocket, PriorityQueue<Message> outgoingMessages, HashSet<String> sentLog){
         this.connectionSocket = connectionSocket;
         this.outgoingMessages = outgoingMessages;
-        this.sentLog = new HashSet<>();
+        this.sentLog = sentLog;
     }
 
     @Override
@@ -30,7 +33,10 @@ public class WriterThread implements Runnable {
 
                 if (!sentLog.contains(messageData)) {
                     outToClient.writeBytes(message.getMessage() + "\n");
-                    sentLog.add(messageData);
+
+                    if (!messageData.equals(HEART) && !messageData.equals(BEAT)) {
+                        sentLog.add(messageData);
+                    }
                 }
             }
         }
