@@ -34,6 +34,12 @@ public class p2p {
 
     private static List<String> sentQueries = new LinkedList<>();
 
+    private static Comparator<Message> messageComparator = new Comparator<Message>() {
+        @Override
+        public int compare(Message m1, Message m2) {
+            return m1.getPriority() - m2.getPriority();
+        }
+    };
 
     public static void main(String[] args){
         Scanner scan;
