@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class p2p {
 
     /* TODO's
-        Add all print statements
+        Test
     */
 
     // Ports
@@ -32,6 +32,8 @@ public class p2p {
     private static AtomicInteger queryNum = new AtomicInteger(0);
 
     private static List<String> sentQueries = new LinkedList<>();
+
+    private static PriorityQueue<Message> peerWideForwarding = new PriorityQueue<>();
 
     private static Comparator<Message> messageComparator = new Comparator<Message>() {
         @Override
@@ -78,18 +80,21 @@ public class p2p {
                                 neighbors.add(connectionSocket);
                                 System.out.println("Connection succeeded");
                             }
-                            catch (Exception e){
+                            catch (Exception e) {
                                 System.out.println("Connection failed");
                             }
-
                         }
 
-                        List<Thread> threads = new LinkedList<>();
+
+                        List<PriorityQueue<Message>> neighborOutgoingQueues = new LinkedList<>();
                         for(Socket neighbor : neighbors){
-                            ConnectNeighborThread connectNeighborThread = new ConnectNeighborThread(neighbor, outgoingQueries, incomingResponses, sentQueries);
-                            Thread thread = new Thread(connectNeighborThread);
-                            threads.add(thread);
+                            // TODO create all threads per neighbor
+
                         }
+
+                        /* TODO Create a thread to check peerWideForwarding
+                        * and add item from queue to each neighbor's outgoing queue
+                        */
 
                         break;
                     case "get":

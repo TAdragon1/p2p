@@ -29,10 +29,8 @@ public class NeighborServer implements Runnable{
                 Socket connectionSocket = welcomeSocket.accept();
                 System.out.println("Accepted connection from another peer");
 
-                AcceptNeighborThread st =
-                        new AcceptNeighborThread(connectionSocket, outgoingQueries, incomingResponses, localFiles,
-                                fileTransferInetAddress, fileTransferPort);
-                Thread thread = new Thread(st);
+                // TODO create threads per neighbor
+
             }
         }
         catch (Exception e){

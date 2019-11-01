@@ -10,17 +10,19 @@ public class ReaderThread implements Runnable {
     private PriorityQueue<Message> outgoingMessages;
     private Object someObject;
     private Set<String> localFiles;
+    private String localIP;
     private String fileTransferIP;
     private String fileTransferPort;
     private PriorityQueue<Message> peerWideForwarding;
 
     public ReaderThread(Socket connectionSocket, PriorityQueue<Message> outgoingMessages, Object someObject,
-                        Set<String> localFiles, String fileTransferIP, String fileTransferPort,
+                        Set<String> localFiles, String localIP, String fileTransferIP, String fileTransferPort,
                         PriorityQueue<Message> peerWideForwarding){
         this.connectionSocket = connectionSocket;
         this.outgoingMessages = outgoingMessages;
         this.someObject = someObject;
         this.localFiles = localFiles;
+        this.localIP = localIP;
         this.fileTransferIP = fileTransferIP;
         this.fileTransferPort = fileTransferPort;
         this.peerWideForwarding = peerWideForwarding;
@@ -35,7 +37,7 @@ public class ReaderThread implements Runnable {
                 String message = inFromClient.readLine();
 
                 Thread readerHelperThread = new Thread(new ReaderHelperThread(message, outgoingMessages, someObject,
-                        localFiles, fileTransferIP, fileTransferPort, peerWideForwarding));
+                        localFiles, localIP, fileTransferIP, fileTransferPort, peerWideForwarding));
             }
         }
         catch (Exception e) {

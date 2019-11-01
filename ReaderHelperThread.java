@@ -10,6 +10,7 @@ public class ReaderHelperThread implements Runnable {
     private PriorityQueue<Message> outgoingMessages;
     private Object someObject;
     private Set<String> localFiles;
+    private String localIP;
     private String fileTransferIP;
     private String fileTransferPort;
     private PriorityQueue<Message> peerWideForwarding;
@@ -25,12 +26,13 @@ public class ReaderHelperThread implements Runnable {
     private static int FIRST_INDEX = 0;
 
     public ReaderHelperThread(String message, PriorityQueue<Message> outgoingMessages, Object someObject,
-                              Set<String> localFiles, String fileTransferIP, String fileTransferPort,
+                              Set<String> localFiles, String localIP, String fileTransferIP, String fileTransferPort,
                               PriorityQueue<Message> peerWideForwarding){
         this.message = message;
         this.outgoingMessages = outgoingMessages;
         this.someObject = someObject;
         this.localFiles = localFiles;
+        this.localIP = localIP;
         this.fileTransferIP = fileTransferIP;
         this.fileTransferPort = fileTransferPort;
         this.peerWideForwarding = peerWideForwarding;
@@ -79,7 +81,7 @@ public class ReaderHelperThread implements Runnable {
             String filename = responseData.split(";")[2];
 
             String originIP = queryID.split("-")[0];
-            boolean atOriginPeer = false;   // TODO Does this peer's ip match queryid's ip
+            boolean atOriginPeer = originIP.equals(localIP);
 
             if (atOriginPeer) {
                 String ipAndPort = responseData.split(";")[1];
