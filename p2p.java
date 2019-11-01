@@ -29,20 +29,11 @@ public class p2p {
     private static LinkedList<String> outgoingQueries = new LinkedList<>();
     private static LinkedList<String> incomingResponses = new LinkedList<>();
 
-    private static final String hostID = grabHostID();
+    private static String myIP;
     private static AtomicInteger queryNum = new AtomicInteger(0);
 
     private static List<String> sentQueries = new LinkedList<>();
 
-    private static String grabHostID(){
-        try{
-            String hostname = InetAddress.getByName("eecslab-10.case.edu").getHostName();
-            return hostname.substring(8, 10);
-        }
-        catch (Exception e){
-            return "10";
-        }
-    }
 
     public static void main(String[] args){
         Scanner scan;
@@ -92,7 +83,7 @@ public class p2p {
                         String fileName = strings[1];
                         System.out.println("DEBUG: Get case " + fileName);
 
-                        String queryID = String.valueOf(hostID) + "-" + String.valueOf(queryNum);
+                        String queryID = myIP + "-" + String.valueOf(queryNum);
                         sentQueries.add(queryID);
                         queryNum.incrementAndGet();
 
@@ -153,6 +144,7 @@ public class p2p {
 
         try {
             Scanner reader = new Scanner(new File("config_peer.txt"));
+            myIP = reader.nextLine();
 
             while (reader.hasNext()){
                 String line = reader.nextLine();
