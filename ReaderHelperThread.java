@@ -46,6 +46,8 @@ public class ReaderHelperThread implements Runnable {
             someObject.notify();
         }
         else if (firstCharOf(message) == Q){
+            System.out.println("Query received: ");
+
             String queryData = message.split(":")[1];        //  "(query ID);(file name)"
             String queryID = queryData.split(";")[0];
             String filename = queryData.split(";")[1];
@@ -53,6 +55,8 @@ public class ReaderHelperThread implements Runnable {
             boolean onThisPeer = localFiles.contains(filename);
 
             if (onThisPeer) {
+                System.out.println("This peer has the requested file");
+
                 String ip = fileTransferIP;
                 String port = fileTransferPort;
 
@@ -63,6 +67,8 @@ public class ReaderHelperThread implements Runnable {
                 outgoingMessages.notify();
             }
             else {
+                System.out.println("This peer doesn't have the requested file");
+
                 peerWideForwarding.add(new Message(message, DEFAULT_PRIORITY));
                 peerWideForwarding.notify();
             }

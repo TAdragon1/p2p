@@ -10,8 +10,6 @@ public class p2p {
 
     /* TODO's
         Add all print statements
-        Add heartbeat threads (client/server)
-        Handle duplicate responses for intermediate peers
     */
 
     // Ports
@@ -29,7 +27,8 @@ public class p2p {
     private static LinkedList<String> outgoingQueries = new LinkedList<>();
     private static LinkedList<String> incomingResponses = new LinkedList<>();
 
-    private static String myIP;
+    private static String peer_hostname = "eecslab-10.case.edu";
+    private static String peer_IP;
     private static AtomicInteger queryNum = new AtomicInteger(0);
 
     private static List<String> sentQueries = new LinkedList<>();
@@ -54,26 +53,35 @@ public class p2p {
             fileXferAddress = fileTransferWelcomeSocket.getInetAddress();
             int fileXferPort = fileTransferWelcomeSocket.getLocalPort();
 
-
             /* Neighbor Welcome Socket */
             ServerSocket neighborWelcomeSocket = new ServerSocket(nextPortNumber());
             NeighborServer neighborServer =
                     new NeighborServer(neighborWelcomeSocket, outgoingQueries, incomingResponses, localFiles, fileXferAddress, fileXferPort);
             Thread neighborTCPServerThread = new Thread(neighborServer);
 
+            peer_IP = InetAddress.getByName(peer_hostname).getHostAddress();
+            System.out.println("Peer started, peer ip = " + peer_IP);
 
             scan = new Scanner(System.in);
             while(true){
-                String cmd = scan.nextLine().toLowerCase();
+                String cmd = scan.nextLine();
                 String[] strings = cmd.split(" ");
-                switch(strings[0]){
+                String checker = strings[0].toLowerCase();
+
+                switch(checker){
                     case "connect":
                         // Connect to each neighbor
-                        System.out.println("DEBUG: Connect case");
-
                         for(String hostname : neighborHostnames){
-                            Socket connectionSocket = new Socket(hostname, nextPortNumber());
-                            neighbors.add(connectionSocket);
+                            System.out.println("Attempt to connect to neighbor: " + hostname);
+                            try {
+                                Socket connectionSocket = new Socket(hostname, nextPortNumber());
+                                neighbors.add(connectionSocket);
+                                System.out.println("Connection succeeded");
+                            }
+                            catch (Exception e){
+                                System.out.println("Connection failed");
+                            }
+
                         }
 
                         List<Thread> threads = new LinkedList<>();
@@ -89,7 +97,7 @@ public class p2p {
                         String fileName = strings[1];
                         System.out.println("DEBUG: Get case " + fileName);
 
-                        String queryID = myIP + "-" + String.valueOf(queryNum);
+                        String queryID = peer_IP + "-" + String.valueOf(queryNum);
                         sentQueries.add(queryID);
                         queryNum.incrementAndGet();
 
@@ -150,7 +158,6 @@ public class p2p {
 
         try {
             Scanner reader = new Scanner(new File("config_peer.txt"));
-            myIP = reader.nextLine();
 
             while (reader.hasNext()){
                 String line = reader.nextLine();

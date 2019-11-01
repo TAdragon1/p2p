@@ -14,6 +14,7 @@ public class CloseSocketTask extends TimerTask {
     @Override
     public void run() {
         try {
+            System.out.println("Heartbeat timeout: Closing socket");
             connectionSocket.close();
             someObject.notify();
         }

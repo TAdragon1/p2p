@@ -17,6 +17,8 @@ public class AcceptTransferThread implements Runnable {
             DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
 
             String transfer = inFromClient.readLine();
+            System.out.println("Received file transfer request");
+
             // Transfer format: "T:(filename)"
             String filename = transfer.split(":")[1];
 

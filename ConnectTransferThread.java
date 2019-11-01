@@ -24,6 +24,7 @@ public class ConnectTransferThread implements Runnable{
             BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
             DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
 
+            System.out.println("Requesting a file transfer");
             outToClient.writeBytes(transfer + "\n");
             String filename = transfer.split(":")[1];
 
@@ -33,6 +34,7 @@ public class ConnectTransferThread implements Runnable{
                 String line = inFromClient.readLine();
                 obtainedFile.write(line.getBytes());
             }
+            System.out.println("File transmission complete");
 
             inFromClient.close();
             outToClient.close();

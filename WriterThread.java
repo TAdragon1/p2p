@@ -12,6 +12,10 @@ public class WriterThread implements Runnable {
     private static String HEART = "Heart";
     private static String BEAT = "beat";
 
+    private static char Q = 'Q';
+
+    private static int FIRST_INDEX = 0;
+
     public WriterThread(Socket connectionSocket, PriorityQueue<Message> outgoingMessages, HashSet<String> sentLog){
         this.connectionSocket = connectionSocket;
         this.outgoingMessages = outgoingMessages;
@@ -32,8 +36,17 @@ public class WriterThread implements Runnable {
                 String messageData = message.getMessage();
 
                 if (!sentLog.contains(messageData)) {
-                    outToClient.writeBytes(message.getMessage() + "\n");
+                    if (message.getMessage().charAt(FIRST_INDEX) == Q) {
+                        System.out.println("Query sent");
+                    }
+                    else if (message.getMessage().equals(HEART)){
+                        System.out.println("Sending heartbeat");
+                    }
+                    else if (message.getMessage().equals(BEAT)){
+                        System.out.println("Receiving heartbeat");
+                    }
 
+                    outToClient.writeBytes(message.getMessage() + "\n");
                     if (!messageData.equals(HEART) && !messageData.equals(BEAT)) {
                         sentLog.add(messageData);
                     }
