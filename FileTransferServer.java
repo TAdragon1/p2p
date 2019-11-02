@@ -1,6 +1,4 @@
 import java.net.*;
-import java.util.LinkedList;
-import java.util.Set;
 
 public class FileTransferServer implements Runnable{
 

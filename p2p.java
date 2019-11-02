@@ -136,7 +136,8 @@ public class p2p {
                                 }
                             }
                             catch (Exception e){
-
+                                System.out.println("Caught exception: " + e);
+                                e.printStackTrace();
                             }
                         }
 
@@ -152,7 +153,8 @@ public class p2p {
                                 }
                             }
                             catch (Exception e){
-
+                                System.out.println("Caught exception: " + e);
+                                e.printStackTrace();
                             }
                         }
 

@@ -17,7 +17,7 @@ public class AcceptTransferThread implements Runnable {
             DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
 
             String transfer = inFromClient.readLine();
-            System.out.println("Received file transfer request");
+            Printer.print("Received file transfer request");
 
             // Transfer format: "T:(filename)"
             String filename = transfer.split(":")[1];
@@ -34,7 +34,8 @@ public class AcceptTransferThread implements Runnable {
             connectionSocket.close();
         }
         catch (Exception e){
-
+            System.out.println("Caught exception: " + e);
+            e.printStackTrace();
         }
     }
 }

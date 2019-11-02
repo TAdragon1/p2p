@@ -37,13 +37,13 @@ public class WriterThread implements Runnable {
 
                 if (!sentLog.contains(messageData)) {
                     if (message.getMessage().charAt(FIRST_INDEX) == Q) {
-                        System.out.println("Query sent");
+                        Printer.print("Query sent");
                     }
                     else if (message.getMessage().equals(HEART)){
-                        System.out.println("Sending heartbeat");
+                        Printer.print("Sending heartbeat");
                     }
                     else if (message.getMessage().equals(BEAT)){
-                        System.out.println("Receiving heartbeat");
+                        Printer.print("Receiving heartbeat");
                     }
 
                     outToClient.writeBytes(message.getMessage() + "\n");

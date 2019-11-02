@@ -19,7 +19,8 @@ public class HeartbeatTask extends TimerTask {
             outgoingMessages.notify();
         }
         catch (Exception e){
-
+            System.out.println("Caught exception: " + e);
+            e.printStackTrace();
         }
     }
 }

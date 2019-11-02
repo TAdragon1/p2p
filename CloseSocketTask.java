@@ -14,12 +14,13 @@ public class CloseSocketTask extends TimerTask {
     @Override
     public void run() {
         try {
-            System.out.println("Heartbeat timeout: Closing socket");
+            Printer.print("Heartbeat timeout: Closing socket");
             connectionSocket.close();
             someObject.notify();
         }
         catch (Exception e){
-
+            System.out.println("Caught exception: " + e);
+            e.printStackTrace();
         }
     }
 }

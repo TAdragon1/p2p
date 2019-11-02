@@ -37,7 +37,7 @@ public class NeighborServer implements Runnable{
         try{
             while(true) {
                 Socket connectionSocket = welcomeSocket.accept();
-                System.out.println("Accepted connection from another peer");
+                Printer.print("Accepted connection from another peer");
 
                 PriorityQueue<Message> neighborOutgoingMessages =
                         new PriorityQueue<>(INITIAL_CAPACITY, messageComparator);
