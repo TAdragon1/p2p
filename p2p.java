@@ -121,9 +121,9 @@ public class p2p {
                         // query format: "Q:(query ID);(file name)"
                         String query = "Q:" + queryID + ";" + fileName;
                         Message messageQ = new Message(query, DEFAULT_PRIORITY);
-                        peerWideForwarding.add(messageQ);
-                        peerWideForwarding.notify();
 
+                        AddToPWF addToPWF = new AddToPWF(messageQ, peerWideForwarding);
+                        Thread addToPWFThread = new Thread(addToPWF);
                         break;
                     case "leave":
                         // Close all connections with neighbors
