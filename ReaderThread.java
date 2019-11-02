@@ -41,6 +41,7 @@ public class ReaderThread implements Runnable {
             {
                 BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
                 String message = inFromClient.readLine();
+                Printer.print("Received: " + message);
 
                 if (!receivedLog.contains(message)) {        // New Incoming Message
                     if (!message.equals(HEART) && !message.equals(BEAT)) {

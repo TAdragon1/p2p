@@ -49,7 +49,7 @@ public class ReaderHelperThread implements Runnable {
             }
         }
         else if (firstCharOf(message) == Q){
-            Printer.print("Query received: ");
+            Printer.print("Query received: " + message);
 
             String queryData = message.split(":")[1];        //  "(query ID);(file name)"
             String queryID = queryData.split(";")[0];
