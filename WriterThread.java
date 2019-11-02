@@ -54,6 +54,9 @@ public class WriterThread implements Runnable {
                         sentLog.add(messageData);
                     }
                 }
+                else{
+                    Printer.print("Duplicate send prevented");
+                }
             }
         }
         catch (Exception e){

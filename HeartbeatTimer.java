@@ -9,8 +9,8 @@ public class HeartbeatTimer implements Runnable {
     private Object someObject;
 
     private static long NO_DELAY = 0;
-    private static long FIVE_SECONDS = 5000;
-    private static long TIMEOUT = 60000;
+    private static long DELAY = 10000;          // 10 seconds
+    private static long TIMEOUT = 60000;        // 1 min
 
     public HeartbeatTimer(Socket connectionSocket, PriorityQueue<Message> outgoingMessages, Object someObject){
         this.connectionSocket = connectionSocket;
@@ -38,8 +38,8 @@ public class HeartbeatTimer implements Runnable {
                     long timePassed = end - start;
                     long delay;
 
-                    if (timePassed < FIVE_SECONDS){
-                        delay = FIVE_SECONDS - timePassed;
+                    if (timePassed < DELAY){
+                        delay = DELAY - timePassed;
                     }
                     else{
                         delay = NO_DELAY;

@@ -14,10 +14,7 @@ public class AddToPWF implements Runnable {
     public void run() {
         synchronized (peerWideForwarding) {
             peerWideForwarding.add(m);
-            Printer.print("Message added");
-
             peerWideForwarding.notify();
-            Printer.print("Notified");
         }
     }
 }
