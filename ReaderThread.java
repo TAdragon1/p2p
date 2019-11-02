@@ -17,6 +17,9 @@ public class ReaderThread implements Runnable {
     private String fileTransferPort;
     private PriorityQueue<Message> peerWideForwarding;
 
+    private static String HEART = "Heart";
+    private static String BEAT = "beat";
+
     public ReaderThread(Socket connectionSocket, PriorityQueue<Message> outgoingMessages, Object someObject,
                         Set<String> localFiles, String localIP, String fileTransferIP, String fileTransferPort,
                         PriorityQueue<Message> peerWideForwarding){
@@ -40,7 +43,9 @@ public class ReaderThread implements Runnable {
                 String message = inFromClient.readLine();
 
                 if (!receivedLog.contains(message)) {        // New Incoming Message
-                    receivedLog.add(message);
+                    if (!message.equals(HEART) && !message.equals(BEAT)) {
+                        receivedLog.add(message);
+                    }
 
                     Thread readerHelperThread = new Thread(new ReaderHelperThread(message, outgoingMessages, someObject,
                             localFiles, localIP, fileTransferIP, fileTransferPort, peerWideForwarding));
