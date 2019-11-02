@@ -37,6 +37,7 @@ public class p2p {
 
     public static void main(String[] args){
         Scanner scan;
+        peerWideForwarding = new PriorityQueue<>(INITIAL_CAPACITY, messageComparator);
 
         try {
             /* File Transfer Welcome Socket */
@@ -106,7 +107,6 @@ public class p2p {
                             neighborOutgoingQueues.add(neighborOutgoingMessages);
                         }
 
-                        peerWideForwarding = new PriorityQueue<>(INITIAL_CAPACITY, messageComparator);
                         PeerWideForwardingThread peerWideForwardingThread = new PeerWideForwardingThread(peerWideForwarding, neighborOutgoingQueues);
                         Thread pwfThread = new Thread(peerWideForwardingThread);
                         break;
