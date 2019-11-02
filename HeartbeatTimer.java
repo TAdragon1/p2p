@@ -49,7 +49,7 @@ public class HeartbeatTimer implements Runnable {
                     timer.schedule(closeSocketTask, TIMEOUT);
                 }
                 else{
-                    // TODO Socket is closed. Cleanup?
+                    break;
                 }
             }
         }
