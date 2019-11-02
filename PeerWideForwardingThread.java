@@ -16,6 +16,7 @@ public class PeerWideForwardingThread implements Runnable {
         try{
             while (true){
                 if (peerWideForwarding.isEmpty()){
+                    Printer.print("Waiting");
                     peerWideForwarding.wait();
                 }
 
@@ -23,6 +24,7 @@ public class PeerWideForwardingThread implements Runnable {
                 for (PriorityQueue<Message> priorityQueue : neighborOutgoingQueues){
                     priorityQueue.add(messageToBeForwarded);
                     priorityQueue.notify();
+                    Printer.print("Message added and queue notified");
                 }
             }
         }

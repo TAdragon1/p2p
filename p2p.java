@@ -60,7 +60,7 @@ public class p2p {
                     new NeighborServer(neighborWelcomeSocket, localFiles, peerIP, peerFileTransferIP,
                             peerFileTransferPort, peerWideForwarding, neighborOutgoingQueues);
             Thread neighborTCPServerThread = new Thread(neighborServer);
-            System.out.println("Peer started, peer ip = " + peerIP);
+            Printer.print("Peer started, peer ip = " + peerIP);
 
             int serverPortNum = neighborWelcomeSocket.getLocalPort();
 
@@ -74,14 +74,14 @@ public class p2p {
                     case "connect":
                         // Connect to each neighbor
                         for(String hostname : neighborHostnames){
-                            System.out.println("Attempt to connect to neighbor: " + hostname);
+                            Printer.print("Attempt to connect to neighbor: " + hostname);
                             try {
                                 Socket connectionSocket = new Socket(hostname, serverPortNum);
                                 neighbors.add(connectionSocket);
-                                System.out.println("Connection succeeded");
+                                Printer.print("Connection succeeded");
                             }
                             catch (Exception e) {
-                                System.out.println("Connection failed");
+                                Printer.print("Connection failed");
                             }
                         }
 
@@ -113,7 +113,7 @@ public class p2p {
                     case "get":
                         // Send query
                         String fileName = strings[1];
-                        System.out.println("DEBUG: Get case " + fileName);
+                        Printer.print("DEBUG: Get case " + fileName);
 
                         String queryID = peerIP + "-" + String.valueOf(queryNum);
                         queryNum.incrementAndGet();
@@ -122,12 +122,14 @@ public class p2p {
                         String query = "Q:" + queryID + ";" + fileName;
                         Message messageQ = new Message(query, DEFAULT_PRIORITY);
 
+                        Printer.print(String.valueOf(peerWideForwarding.size()));
+
                         AddToPWF addToPWF = new AddToPWF(messageQ, peerWideForwarding);
                         Thread addToPWFThread = new Thread(addToPWF);
                         break;
                     case "leave":
                         // Close all connections with neighbors
-                        System.out.println("DEBUG: Leave case");
+                        Printer.print("DEBUG: Leave case");
 
                         for (Socket socket : neighbors) {
                             try {
@@ -136,7 +138,7 @@ public class p2p {
                                 }
                             }
                             catch (Exception e){
-                                System.out.println("Caught exception: " + e);
+                                Printer.print("Caught exception: " + e);
                                 e.printStackTrace();
                             }
                         }
@@ -144,7 +146,7 @@ public class p2p {
                         break;
                     case "exit":
                         // Close all open connections and terminate
-                        System.out.println("DEBUG: Exit case");
+                        Printer.print("DEBUG: Exit case");
 
                         for (Socket socket : neighbors) {
                             try {
@@ -153,7 +155,7 @@ public class p2p {
                                 }
                             }
                             catch (Exception e){
-                                System.out.println("Caught exception: " + e);
+                                Printer.print("Caught exception: " + e);
                                 e.printStackTrace();
                             }
                         }
@@ -167,13 +169,13 @@ public class p2p {
 
                         return;
                     default:
-                        System.out.println("Debug: Default case");
+                        Printer.print("Debug: Default case");
                 }
             }
 
         }
         catch (Exception e){
-            System.out.println("Caught exception: " + e);
+            Printer.print("Caught exception: " + e);
             e.printStackTrace();
         }
 
@@ -198,11 +200,11 @@ public class p2p {
             }
         }
         catch (FileNotFoundException fileNotFoundException){
-            System.out.println("File Not Found");
+            Printer.print("File Not Found");
         }
 
         for (Integer item : portnums){
-            System.out.println(item);
+            Printer.print(String.valueOf(item));
         }
 
         return portnums;
@@ -220,11 +222,11 @@ public class p2p {
             }
         }
         catch (FileNotFoundException fileNotFoundException){
-            System.out.println("File Not Found");
+            Printer.print("File Not Found");
         }
 
         for (String item : hostnames){
-            System.out.println(item);
+            Printer.print(item);
         }
 
         return hostnames;
@@ -242,11 +244,11 @@ public class p2p {
             }
         }
         catch (FileNotFoundException fileNotFoundException){
-            System.out.println("File Not Found");
+            Printer.print("File Not Found");
         }
 
         for (String item : files){
-            System.out.println(item);
+            Printer.print(item);
         }
 
         return files;
