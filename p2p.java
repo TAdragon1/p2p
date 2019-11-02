@@ -20,11 +20,8 @@ public class p2p {
     // Files
     private static Set<String> localFiles = readInFiles();
 
-    private static LinkedList<String> outgoingQueries = new LinkedList<>();
-    private static LinkedList<String> incomingResponses = new LinkedList<>();
-
-    private static String peer_hostname = "eecslab-10.case.edu";
-    private static String peer_IP;
+    private static String peerHostname;
+    private static String peerIP;
     private static AtomicInteger queryNum = new AtomicInteger(0);
 
     private static Comparator<Message> messageComparator = new Comparator<Message>() {
@@ -35,6 +32,7 @@ public class p2p {
     };
 
     private static int INITIAL_CAPACITY = 10;
+    private static int DEFAULT_PRIORITY = 1;
     private static PriorityQueue<Message> peerWideForwarding;
 
     public static void main(String[] args){
@@ -54,15 +52,15 @@ public class p2p {
             String peerFileTransferPort = String.valueOf(fileXferPort);
 
             /* Neighbor Welcome Socket */
-            peer_IP = InetAddress.getByName(peer_hostname).getHostAddress();
+            peerIP = InetAddress.getByName(peerHostname).getHostAddress();
             List<PriorityQueue<Message>> neighborOutgoingQueues = new LinkedList<>();
 
             ServerSocket neighborWelcomeSocket = new ServerSocket(nextPortNumber());
             NeighborServer neighborServer =
-                    new NeighborServer(neighborWelcomeSocket, localFiles, peer_IP, peerFileTransferIP,
+                    new NeighborServer(neighborWelcomeSocket, localFiles, peerIP, peerFileTransferIP,
                             peerFileTransferPort, peerWideForwarding, neighborOutgoingQueues);
             Thread neighborTCPServerThread = new Thread(neighborServer);
-            System.out.println("Peer started, peer ip = " + peer_IP);
+            System.out.println("Peer started, peer ip = " + peerIP);
 
             scan = new Scanner(System.in);
             while(true){
@@ -96,7 +94,7 @@ public class p2p {
                             Object heartbeatObject = new Object();
                             ReaderThread neighborReader =
                                     new ReaderThread(neighbor, neighborOutgoingMessages, heartbeatObject, localFiles,
-                                            peer_IP, peerFileTransferIP, peerFileTransferPort, peerWideForwarding);
+                                            peerIP, peerFileTransferIP, peerFileTransferPort, peerWideForwarding);
                             Thread neighborReaderThread = new Thread(neighborReader);
 
                             HeartbeatTimer neighborHeartbeatTimer =
@@ -115,13 +113,14 @@ public class p2p {
                         String fileName = strings[1];
                         System.out.println("DEBUG: Get case " + fileName);
 
-                        String queryID = peer_IP + "-" + String.valueOf(queryNum);
+                        String queryID = peerIP + "-" + String.valueOf(queryNum);
                         queryNum.incrementAndGet();
 
                         // query format: "Q:(query ID);(file name)"
-                        outgoingQueries.add("Q:" + queryID + ";" + fileName);
-                        outgoingQueries.add("Q:" + queryID + ";" + fileName);
-                        outgoingQueries.notifyAll();
+                        String query = "Q:" + queryID + ";" + fileName;
+                        Message messageQ = new Message(query, DEFAULT_PRIORITY);
+                        peerWideForwarding.add(messageQ);
+                        peerWideForwarding.notify();
 
                         break;
                     case "leave":
@@ -129,8 +128,13 @@ public class p2p {
                         System.out.println("DEBUG: Leave case");
 
                         for (Socket socket : neighbors) {
-                            if (!socket.isClosed()){
-                                socket.close();
+                            try {
+                                if (!socket.isClosed()) {
+                                    socket.close();
+                                }
+                            }
+                            catch (Exception e){
+
                             }
                         }
 
@@ -140,8 +144,13 @@ public class p2p {
                         System.out.println("DEBUG: Exit case");
 
                         for (Socket socket : neighbors) {
-                            if (!socket.isClosed()){
-                                socket.close();
+                            try {
+                                if (!socket.isClosed()) {
+                                    socket.close();
+                                }
+                            }
+                            catch (Exception e){
+
                             }
                         }
 
@@ -175,6 +184,8 @@ public class p2p {
 
         try {
             Scanner reader = new Scanner(new File("config_peer.txt"));
+
+            peerHostname = reader.nextLine();
 
             while (reader.hasNext()){
                 String line = reader.nextLine();
