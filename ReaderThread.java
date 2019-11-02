@@ -20,11 +20,11 @@ public class ReaderThread implements Runnable {
     private static String HEART = "Heart";
     private static String BEAT = "beat";
 
-    public ReaderThread(Socket connectionSocket, PriorityQueue<Message> outgoingMessages, Object someObject,
-                        Set<String> localFiles, String localIP, String fileTransferIP, String fileTransferPort,
-                        PriorityQueue<Message> peerWideForwarding){
+    public ReaderThread(Socket connectionSocket, HashSet<String> receivedLog, PriorityQueue<Message> outgoingMessages,
+                        Object someObject, Set<String> localFiles, String localIP, String fileTransferIP,
+                        String fileTransferPort, PriorityQueue<Message> peerWideForwarding){
         this.connectionSocket = connectionSocket;
-        this.receivedLog = new HashSet<>();
+        this.receivedLog = receivedLog;
         this.outgoingMessages = outgoingMessages;
         this.someObject = someObject;
         this.localFiles = localFiles;

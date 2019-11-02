@@ -48,8 +48,9 @@ public class NeighborServer implements Runnable{
                 neighborWriterThread.start();
 
                 Object heartbeatObject = new Object();
+                HashSet<String> neighborReceivedLog = new HashSet<>();
                 ReaderThread neighborReader =
-                        new ReaderThread(connectionSocket, neighborOutgoingMessages, heartbeatObject, localFiles,
+                        new ReaderThread(connectionSocket, neighborReceivedLog, neighborOutgoingMessages, heartbeatObject, localFiles,
                                 peerIP, peerFileTransferIP, peerFileTransferPort, peerWideForwarding);
                 Thread neighborReaderThread = new Thread(neighborReader);
                 neighborReaderThread.start();

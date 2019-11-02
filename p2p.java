@@ -98,9 +98,11 @@ public class p2p {
                             neighborWriterThread.start();
 
                             Object heartbeatObject = new Object();
+                            HashSet<String> neighborReceivedLog = new HashSet<>();
                             ReaderThread neighborReader =
-                                    new ReaderThread(neighbor, neighborOutgoingMessages, heartbeatObject, localFiles,
-                                            peerIP, peerFileTransferIP, peerFileTransferPort, peerWideForwarding);
+                                    new ReaderThread(neighbor, neighborReceivedLog, neighborOutgoingMessages,
+                                            heartbeatObject, localFiles, peerIP, peerFileTransferIP,
+                                            peerFileTransferPort, peerWideForwarding);
                             Thread neighborReaderThread = new Thread(neighborReader);
                             neighborReaderThread.start();
 
@@ -112,7 +114,8 @@ public class p2p {
                             neighborOutgoingQueues.add(neighborOutgoingMessages);
                         }
 
-                        PeerWideForwardingThread peerWideForwardingThread = new PeerWideForwardingThread(peerWideForwarding, neighborOutgoingQueues);
+                        PeerWideForwardingThread peerWideForwardingThread =
+                                new PeerWideForwardingThread(peerWideForwarding, neighborOutgoingQueues);
                         Thread pwfThread = new Thread(peerWideForwardingThread);
                         pwfThread.start();
                         break;
