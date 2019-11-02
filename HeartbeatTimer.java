@@ -28,7 +28,9 @@ public class HeartbeatTimer implements Runnable {
             timer.schedule(closeSocketTask, TIMEOUT);
 
             while (true) {
-                someObject.wait();
+                synchronized (someObject) {
+                    someObject.wait();
+                }
                 if (!connectionSocket.isClosed()){
                     closeSocketTask.cancel();
 
