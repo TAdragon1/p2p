@@ -1,5 +1,7 @@
 import java.io.DataOutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 
@@ -15,6 +17,7 @@ public class WriterThread implements Runnable {
     private static char Q = 'Q';
 
     private static int FIRST_INDEX = 0;
+    private static int THIRD_INDEX = 2;
 
     public WriterThread(Socket connectionSocket, PriorityQueue<Message> outgoingMessages, HashSet<String> sentLog){
         this.connectionSocket = connectionSocket;
@@ -40,22 +43,31 @@ public class WriterThread implements Runnable {
 
                 if (!sentLog.contains(messageData)) {
                     if (message.getMessage().charAt(FIRST_INDEX) == Q) {
-                        Printer.print("Query sent");
+                        InetAddress remoteAddress = connectionSocket.getInetAddress();
+                        String remoteIP = remoteAddress.getHostAddress();
+                        String messageContent = messageData.substring(THIRD_INDEX);
+                        String messageIP = messageContent.split("-")[0];
+                        if (remoteIP.equals(messageIP)){
+                            // Then receiver of this query is query originator, don't send
+                        }
+                        else{
+                            outToClient.writeBytes(message.getMessage() + "\n");
+                            Printer.print("Query sent");
+                        }
+
                     }
                     else if (message.getMessage().equals(HEART)){
-                        Printer.print("Sending heartbeat");
+                        Printer.print("Sending Heart");
+                        outToClient.writeBytes(message.getMessage() + "\n");
                     }
                     else if (message.getMessage().equals(BEAT)){
-                        Printer.print("Receiving heartbeat");
+                        Printer.print("Sending beat");
+                        outToClient.writeBytes(message.getMessage() + "\n");
                     }
 
-                    outToClient.writeBytes(message.getMessage() + "\n");
                     if (!messageData.equals(HEART) && !messageData.equals(BEAT)) {
                         sentLog.add(messageData);
                     }
-                }
-                else{
-                    Printer.print("Duplicate send prevented");
                 }
             }
         }

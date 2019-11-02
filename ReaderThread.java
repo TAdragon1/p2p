@@ -52,9 +52,6 @@ public class ReaderThread implements Runnable {
                             localFiles, localIP, fileTransferIP, fileTransferPort, peerWideForwarding));
                     readerHelperThread.start();
                 }
-                else{
-                    Printer.print("Duplicate received");
-                }
                 // Else do nothing, we've already handled this before.
             }
         }
