@@ -44,6 +44,7 @@ public class p2p {
             ServerSocket fileTransferWelcomeSocket = new ServerSocket(nextPortNumber());
             FileTransferServer fileTransferServer = new FileTransferServer(fileTransferWelcomeSocket);
             Thread fileTransferServerThread = new Thread(fileTransferServer);
+            fileTransferServerThread.start();
 
             InetAddress fileXferAddress;
             fileXferAddress = fileTransferWelcomeSocket.getInetAddress();
@@ -61,6 +62,7 @@ public class p2p {
                     new NeighborServer(neighborWelcomeSocket, localFiles, peerIP, peerFileTransferIP,
                             peerFileTransferPort, peerWideForwarding, neighborOutgoingQueues);
             Thread neighborTCPServerThread = new Thread(neighborServer);
+            neighborTCPServerThread.start();
             Printer.print("Peer started, peer ip = " + peerIP);
 
             int serverPortNum = neighborWelcomeSocket.getLocalPort();
@@ -93,22 +95,26 @@ public class p2p {
                             WriterThread neighborWriter =
                                     new WriterThread(neighbor, neighborOutgoingMessages, neighborSentLog);
                             Thread neighborWriterThread = new Thread(neighborWriter);
+                            neighborWriterThread.start();
 
                             Object heartbeatObject = new Object();
                             ReaderThread neighborReader =
                                     new ReaderThread(neighbor, neighborOutgoingMessages, heartbeatObject, localFiles,
                                             peerIP, peerFileTransferIP, peerFileTransferPort, peerWideForwarding);
                             Thread neighborReaderThread = new Thread(neighborReader);
+                            neighborReaderThread.start();
 
                             HeartbeatTimer neighborHeartbeatTimer =
                                     new HeartbeatTimer(neighbor, neighborOutgoingMessages, heartbeatObject);
                             Thread neighborHeartbeatTimerThread = new Thread(neighborHeartbeatTimer);
+                            neighborHeartbeatTimerThread.start();
 
                             neighborOutgoingQueues.add(neighborOutgoingMessages);
                         }
 
                         PeerWideForwardingThread peerWideForwardingThread = new PeerWideForwardingThread(peerWideForwarding, neighborOutgoingQueues);
                         Thread pwfThread = new Thread(peerWideForwardingThread);
+                        pwfThread.start();
                         break;
                     case "get":
                         // Send query
@@ -124,6 +130,7 @@ public class p2p {
 
                         AddToPWF addToPWF = new AddToPWF(messageQ, peerWideForwarding);
                         Thread addToPWFThread = new Thread(addToPWF);
+                        addToPWFThread.start();
                         break;
                     case "leave":
                         // Close all connections with neighbors

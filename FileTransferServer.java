@@ -18,6 +18,7 @@ public class FileTransferServer implements Runnable{
                 AcceptTransferThread st =
                         new AcceptTransferThread(connectionSocket);
                 Thread thread = new Thread(st);
+                thread.start();
             }
         }
         catch (Exception e){

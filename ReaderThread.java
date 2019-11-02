@@ -38,6 +38,7 @@ public class ReaderThread implements Runnable {
 
                 Thread readerHelperThread = new Thread(new ReaderHelperThread(message, outgoingMessages, someObject,
                         localFiles, localIP, fileTransferIP, fileTransferPort, peerWideForwarding));
+                readerHelperThread.start();
             }
         }
         catch (Exception e) {

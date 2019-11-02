@@ -88,6 +88,7 @@ public class ReaderHelperThread implements Runnable {
                 String transfer = "T:" + filename;
                 ConnectTransferThread connectTransferThread = new ConnectTransferThread(ip, port, transfer);
                 Thread thread = new Thread(connectTransferThread);
+                thread.start();
             }
             else {
                 outgoingMessages.add(new Message(message, DEFAULT_PRIORITY));
