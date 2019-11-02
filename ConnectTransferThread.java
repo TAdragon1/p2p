@@ -29,8 +29,12 @@ public class ConnectTransferThread implements Runnable{
 
             // Response is file content
             FileOutputStream obtainedFile = new FileOutputStream("obtained//" + filename);
+
+            String line = inFromClient.readLine();
+            obtainedFile.write(line.getBytes());
+
             while (inFromClient.ready()) {
-                String line = inFromClient.readLine();
+                line = inFromClient.readLine();
                 obtainedFile.write(line.getBytes());
             }
             Printer.print("File transmission complete");
