@@ -6,7 +6,6 @@ public class NeighborServer implements Runnable{
     private ServerSocket welcomeSocket;
     private Set<String> localFiles;
     private String peerIP;
-    private String peerFileTransferIP;
     private String peerFileTransferPort;
     private PriorityQueue<Message> peerWideForwarding;
     private List<PriorityQueue<Message>> neighborOutgoingQueues;
@@ -20,13 +19,12 @@ public class NeighborServer implements Runnable{
 
     private static int INITIAL_CAPACITY = 10;
 
-    public NeighborServer(ServerSocket welcomeSocket, Set<String> localFiles, String peerIP, String peerFileTransferIP,
+    public NeighborServer(ServerSocket welcomeSocket, Set<String> localFiles, String peerIP,
                           String peerFileTransferPort, PriorityQueue<Message> peerWideForwarding,
                           List<PriorityQueue<Message>> neighborOutgoingQueues){
         this.welcomeSocket = welcomeSocket;
         this.localFiles = localFiles;
         this.peerIP = peerIP;
-        this.peerFileTransferIP = peerFileTransferIP;
         this.peerFileTransferPort = peerFileTransferPort;
         this.peerWideForwarding = peerWideForwarding;
         this.neighborOutgoingQueues = neighborOutgoingQueues;
@@ -51,7 +49,7 @@ public class NeighborServer implements Runnable{
                 HashSet<String> neighborReceivedLog = new HashSet<>();
                 ReaderThread neighborReader =
                         new ReaderThread(connectionSocket, neighborReceivedLog, neighborOutgoingMessages, heartbeatObject, localFiles,
-                                peerIP, peerFileTransferIP, peerFileTransferPort, peerWideForwarding);
+                                peerIP, peerFileTransferPort, peerWideForwarding);
                 Thread neighborReaderThread = new Thread(neighborReader);
                 neighborReaderThread.start();
 

@@ -48,11 +48,8 @@ public class p2p {
             Thread fileTransferServerThread = new Thread(fileTransferServer);
             fileTransferServerThread.start();
 
-            InetAddress fileXferAddress;
-            fileXferAddress = fileTransferWelcomeSocket.getInetAddress();
             int fileXferPort = fileTransferWelcomeSocket.getLocalPort();
 
-            String peerFileTransferIP = fileXferAddress.getHostAddress();
             String peerFileTransferPort = String.valueOf(fileXferPort);
 
             /* Neighbor Welcome Socket */
@@ -61,7 +58,7 @@ public class p2p {
 
             ServerSocket neighborWelcomeSocket = new ServerSocket(nextPortNumber());
             NeighborServer neighborServer =
-                    new NeighborServer(neighborWelcomeSocket, localFiles, peerIP, peerFileTransferIP,
+                    new NeighborServer(neighborWelcomeSocket, localFiles, peerIP,
                             peerFileTransferPort, peerWideForwarding, neighborOutgoingQueues);
             Thread neighborTCPServerThread = new Thread(neighborServer);
             neighborTCPServerThread.start();
@@ -103,7 +100,7 @@ public class p2p {
                             HashSet<String> neighborReceivedLog = new HashSet<>();
                             ReaderThread neighborReader =
                                     new ReaderThread(neighbor, neighborReceivedLog, neighborOutgoingMessages,
-                                            heartbeatObject, localFiles, peerIP, peerFileTransferIP,
+                                            heartbeatObject, localFiles, peerIP,
                                             peerFileTransferPort, peerWideForwarding);
                             Thread neighborReaderThread = new Thread(neighborReader);
                             neighborReaderThread.start();

@@ -8,7 +8,6 @@ public class ReaderHelperThread implements Runnable {
     private Object someObject;
     private Set<String> localFiles;
     private String localIP;
-    private String fileTransferIP;
     private String fileTransferPort;
     private PriorityQueue<Message> peerWideForwarding;
 
@@ -23,14 +22,13 @@ public class ReaderHelperThread implements Runnable {
     private static int FIRST_INDEX = 0;
 
     public ReaderHelperThread(String message, PriorityQueue<Message> outgoingMessages, Object someObject,
-                              Set<String> localFiles, String localIP, String fileTransferIP, String fileTransferPort,
+                              Set<String> localFiles, String localIP, String fileTransferPort,
                               PriorityQueue<Message> peerWideForwarding){
         this.message = message;
         this.outgoingMessages = outgoingMessages;
         this.someObject = someObject;
         this.localFiles = localFiles;
         this.localIP = localIP;
-        this.fileTransferIP = fileTransferIP;
         this.fileTransferPort = fileTransferPort;
         this.peerWideForwarding = peerWideForwarding;
     }
@@ -62,7 +60,7 @@ public class ReaderHelperThread implements Runnable {
             if (onThisPeer) {
                 Printer.print("This peer has the requested file");
 
-                String ip = fileTransferIP;
+                String ip = localIP;
                 String port = fileTransferPort;
 
                 // Response format: "R:(query id);(peer IP:port);(filename)"

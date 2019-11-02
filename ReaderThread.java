@@ -13,7 +13,6 @@ public class ReaderThread implements Runnable {
     private Object someObject;
     private Set<String> localFiles;
     private String localIP;
-    private String fileTransferIP;
     private String fileTransferPort;
     private PriorityQueue<Message> peerWideForwarding;
 
@@ -21,7 +20,7 @@ public class ReaderThread implements Runnable {
     private static String BEAT = "beat";
 
     public ReaderThread(Socket connectionSocket, HashSet<String> receivedLog, PriorityQueue<Message> outgoingMessages,
-                        Object someObject, Set<String> localFiles, String localIP, String fileTransferIP,
+                        Object someObject, Set<String> localFiles, String localIP,
                         String fileTransferPort, PriorityQueue<Message> peerWideForwarding){
         this.connectionSocket = connectionSocket;
         this.receivedLog = receivedLog;
@@ -29,7 +28,6 @@ public class ReaderThread implements Runnable {
         this.someObject = someObject;
         this.localFiles = localFiles;
         this.localIP = localIP;
-        this.fileTransferIP = fileTransferIP;
         this.fileTransferPort = fileTransferPort;
         this.peerWideForwarding = peerWideForwarding;
     }
@@ -49,7 +47,7 @@ public class ReaderThread implements Runnable {
                         }
 
                         Thread readerHelperThread = new Thread(new ReaderHelperThread(message, outgoingMessages, someObject,
-                                localFiles, localIP, fileTransferIP, fileTransferPort, peerWideForwarding));
+                                localFiles, localIP, fileTransferPort, peerWideForwarding));
                         readerHelperThread.start();
                     }
                     // Else do nothing, we've already handled this before.
