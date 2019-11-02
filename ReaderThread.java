@@ -41,18 +41,19 @@ public class ReaderThread implements Runnable {
             {
                 BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
                 String message = inFromClient.readLine();
-                Printer.print("Received: " + message);
 
-                if (!receivedLog.contains(message)) {        // New Incoming Message
-                    if (!message.equals(HEART) && !message.equals(BEAT)) {
-                        receivedLog.add(message);
+                synchronized (receivedLog) {
+                    if (!receivedLog.contains(message)) {        // New Incoming Message
+                        if (!message.equals(HEART) && !message.equals(BEAT)) {
+                            receivedLog.add(message);
+                        }
+
+                        Thread readerHelperThread = new Thread(new ReaderHelperThread(message, outgoingMessages, someObject,
+                                localFiles, localIP, fileTransferIP, fileTransferPort, peerWideForwarding));
+                        readerHelperThread.start();
                     }
-
-                    Thread readerHelperThread = new Thread(new ReaderHelperThread(message, outgoingMessages, someObject,
-                            localFiles, localIP, fileTransferIP, fileTransferPort, peerWideForwarding));
-                    readerHelperThread.start();
+                    // Else do nothing, we've already handled this before.
                 }
-                // Else do nothing, we've already handled this before.
             }
         }
         catch (Exception e) {

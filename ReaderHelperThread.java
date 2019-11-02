@@ -38,12 +38,14 @@ public class ReaderHelperThread implements Runnable {
     @Override
     public void run() {
         if (message.equals(HEART)){
+            Printer.print("Heart received");
             synchronized (outgoingMessages) {
                 outgoingMessages.add(new Message(BEAT, HIGHEST_PRIORITY));
                 outgoingMessages.notify();
             }
         }
         else if (message.equals(BEAT)){
+            Printer.print("beat received");
             synchronized (someObject) {
                 someObject.notify();
             }
@@ -88,6 +90,7 @@ public class ReaderHelperThread implements Runnable {
             boolean atOriginPeer = originIP.equals(localIP);
 
             if (atOriginPeer) {
+                Printer.print("At origin peer");
                 String ipAndPort = responseData.split(";")[1];
                 String ip = ipAndPort.split(":")[0];
                 String port = ipAndPort.split(":")[1];
@@ -98,6 +101,7 @@ public class ReaderHelperThread implements Runnable {
                 thread.start();
             }
             else {
+                Printer.print("Not at origin peer");
                 synchronized (outgoingMessages) {
                     outgoingMessages.add(new Message(message, DEFAULT_PRIORITY));
                     outgoingMessages.notify();
