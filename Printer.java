@@ -1,7 +1,9 @@
 public class Printer {
 
-    public synchronized static void print(String toPrint){
-        System.out.println(toPrint);
+    public static void print(String toPrint){
+        synchronized (System.out) {
+            System.out.println(toPrint);
+        }
     }
 
 }

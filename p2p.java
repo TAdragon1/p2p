@@ -122,8 +122,6 @@ public class p2p {
                         String query = "Q:" + queryID + ";" + fileName;
                         Message messageQ = new Message(query, DEFAULT_PRIORITY);
 
-                        Printer.print(String.valueOf(peerWideForwarding.size()));
-
                         AddToPWF addToPWF = new AddToPWF(messageQ, peerWideForwarding);
                         Thread addToPWFThread = new Thread(addToPWF);
                         break;
