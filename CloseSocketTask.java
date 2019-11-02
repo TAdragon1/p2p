@@ -16,7 +16,9 @@ public class CloseSocketTask extends TimerTask {
         try {
             Printer.print("Heartbeat timeout: Closing socket");
             connectionSocket.close();
-            someObject.notify();
+            synchronized (someObject) {
+                someObject.notify();
+            }
         }
         catch (Exception e){
             System.out.println("Caught exception: " + e);

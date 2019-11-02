@@ -15,15 +15,20 @@ public class PeerWideForwardingThread implements Runnable {
     public void run() {
         try{
             while (true){
-                if (peerWideForwarding.isEmpty()){
-                    Printer.print("Waiting");
-                    peerWideForwarding.wait();
-                }
+                Message messageToBeForwarded;
+                synchronized (peerWideForwarding) {
+                    if (peerWideForwarding.isEmpty()) {
+                        Printer.print("Waiting");
+                        peerWideForwarding.wait();
+                    }
 
-                Message messageToBeForwarded = peerWideForwarding.remove();
+                    messageToBeForwarded = peerWideForwarding.remove();
+                }
                 for (PriorityQueue<Message> priorityQueue : neighborOutgoingQueues){
-                    priorityQueue.add(messageToBeForwarded);
-                    priorityQueue.notify();
+                    synchronized (priorityQueue) {
+                        priorityQueue.add(messageToBeForwarded);
+                        priorityQueue.notify();
+                    }
                     Printer.print("Message added and queue notified");
                 }
             }

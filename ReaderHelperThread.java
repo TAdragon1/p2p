@@ -38,11 +38,15 @@ public class ReaderHelperThread implements Runnable {
     @Override
     public void run() {
         if (message.equals(HEART)){
-            outgoingMessages.add(new Message(BEAT, HIGHEST_PRIORITY));
-            outgoingMessages.notify();
+            synchronized (outgoingMessages) {
+                outgoingMessages.add(new Message(BEAT, HIGHEST_PRIORITY));
+                outgoingMessages.notify();
+            }
         }
         else if (message.equals(BEAT)){
-            someObject.notify();
+            synchronized (someObject) {
+                someObject.notify();
+            }
         }
         else if (firstCharOf(message) == Q){
             Printer.print("Query received: ");
@@ -61,15 +65,17 @@ public class ReaderHelperThread implements Runnable {
 
                 // Response format: "R:(query id);(peer IP:port);(filename)"
                 String response = "R:" + queryID + ";" + ip + ":" + port + ";" + filename;
-
-                outgoingMessages.add(new Message(response, DEFAULT_PRIORITY));
-                outgoingMessages.notify();
+                synchronized (outgoingMessages) {
+                    outgoingMessages.add(new Message(response, DEFAULT_PRIORITY));
+                    outgoingMessages.notify();
+                }
             }
             else {
                 Printer.print("This peer doesn't have the requested file");
-
-                peerWideForwarding.add(new Message(message, DEFAULT_PRIORITY));
-                peerWideForwarding.notify();
+                synchronized (peerWideForwarding) {
+                    peerWideForwarding.add(new Message(message, DEFAULT_PRIORITY));
+                    peerWideForwarding.notify();
+                }
             }
         }
         else if (firstCharOf(message) == R){
@@ -91,8 +97,10 @@ public class ReaderHelperThread implements Runnable {
                 thread.start();
             }
             else {
-                outgoingMessages.add(new Message(message, DEFAULT_PRIORITY));
-                outgoingMessages.notify();
+                synchronized (outgoingMessages) {
+                    outgoingMessages.add(new Message(message, DEFAULT_PRIORITY));
+                    outgoingMessages.notify();
+                }
             }
         }
     }

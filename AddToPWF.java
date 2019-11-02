@@ -12,10 +12,12 @@ public class AddToPWF implements Runnable {
 
     @Override
     public void run() {
-        peerWideForwarding.add(m);
-        Printer.print("Message added");
+        synchronized (peerWideForwarding) {
+            peerWideForwarding.add(m);
+            Printer.print("Message added");
 
-        peerWideForwarding.notify();
-        Printer.print("Notified");
+            peerWideForwarding.notify();
+            Printer.print("Notified");
+        }
     }
 }

@@ -27,12 +27,15 @@ public class WriterThread implements Runnable {
         try {
             while (true) {
                 DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
+                Message message;
+                synchronized (outgoingMessages) {
+                    if (outgoingMessages.isEmpty()) {
+                        outgoingMessages.wait();
+                    }
 
-                if (outgoingMessages.isEmpty()){
-                    outgoingMessages.wait();
+
+                    message = outgoingMessages.remove();
                 }
-
-                Message message = outgoingMessages.remove();
                 String messageData = message.getMessage();
 
                 if (!sentLog.contains(messageData)) {
