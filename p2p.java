@@ -35,6 +35,8 @@ public class p2p {
     private static int DEFAULT_PRIORITY = 1;
     private static PriorityQueue<Message> peerWideForwarding;
 
+    private static List<Thread> allThreads = new LinkedList<>();
+
     public static void main(String[] args){
         Scanner scan;
         peerWideForwarding = new PriorityQueue<>(INITIAL_CAPACITY, messageComparator);

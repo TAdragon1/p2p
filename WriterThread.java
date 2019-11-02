@@ -42,7 +42,7 @@ public class WriterThread implements Runnable {
                 String messageData = message.getMessage();
 
                 if (!sentLog.contains(messageData)) {
-                    if (message.getMessage().charAt(FIRST_INDEX) == Q) {
+                    if (messageData.charAt(FIRST_INDEX) == Q) {
                         InetAddress remoteAddress = connectionSocket.getInetAddress();
                         String remoteIP = remoteAddress.getHostAddress();
                         String messageContent = messageData.substring(THIRD_INDEX);
@@ -51,18 +51,21 @@ public class WriterThread implements Runnable {
                             // Then receiver of this query is query originator, don't send
                         }
                         else{
-                            outToClient.writeBytes(message.getMessage() + "\n");
+                            outToClient.writeBytes(messageData + "\n");
                             Printer.print("Query sent");
                         }
-
                     }
-                    else if (message.getMessage().equals(HEART)){
+                    else if (messageData.equals(HEART)){
                         Printer.print("Sending Heart");
-                        outToClient.writeBytes(message.getMessage() + "\n");
+                        outToClient.writeBytes(messageData + "\n");
                     }
-                    else if (message.getMessage().equals(BEAT)){
+                    else if (messageData.equals(BEAT)){
                         Printer.print("Sending beat");
-                        outToClient.writeBytes(message.getMessage() + "\n");
+                        outToClient.writeBytes(messageData + "\n");
+                    }
+                    else{
+                        Printer.print("Sending " + messageData);
+                        outToClient.writeBytes(messageData + "\n");
                     }
 
                     if (!messageData.equals(HEART) && !messageData.equals(BEAT)) {

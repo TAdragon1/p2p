@@ -79,6 +79,7 @@ public class ReaderHelperThread implements Runnable {
             }
         }
         else if (firstCharOf(message) == R){
+            Printer.print("Response received: " + message);
             String responseData = message.substring(2);             // "(query id);(peer IP:port);(filename)"
             String queryID = responseData.split(";")[0];
             String filename = responseData.split(";")[2];
