@@ -54,11 +54,6 @@ public class NeighborServer implements Runnable{
                 Thread neighborReaderThread = new Thread(neighborReader);
                 neighborReaderThread.start();
 
-                HeartbeatTimer neighborHeartbeatTimer =
-                        new HeartbeatTimer(connectionSocket, neighborOutgoingMessages, heartbeatObject);
-                Thread neighborHeartbeatTimerThread = new Thread(neighborHeartbeatTimer);
-                neighborHeartbeatTimerThread.start();
-
                 neighborOutgoingQueues.add(neighborOutgoingMessages);
             }
         }
