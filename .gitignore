@@ -4,6 +4,7 @@
 .idea/*
 
 *.class
+*.txt
 
 # User-specific stuff
 .idea/**/workspace.xml
