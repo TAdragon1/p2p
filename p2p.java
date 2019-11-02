@@ -62,6 +62,8 @@ public class p2p {
             Thread neighborTCPServerThread = new Thread(neighborServer);
             System.out.println("Peer started, peer ip = " + peerIP);
 
+            int serverPortNum = neighborWelcomeSocket.getLocalPort();
+
             scan = new Scanner(System.in);
             while(true){
                 String cmd = scan.nextLine();
@@ -74,7 +76,7 @@ public class p2p {
                         for(String hostname : neighborHostnames){
                             System.out.println("Attempt to connect to neighbor: " + hostname);
                             try {
-                                Socket connectionSocket = new Socket(hostname, nextPortNumber());
+                                Socket connectionSocket = new Socket(hostname, serverPortNum);
                                 neighbors.add(connectionSocket);
                                 System.out.println("Connection succeeded");
                             }
