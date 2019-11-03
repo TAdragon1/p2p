@@ -14,10 +14,13 @@ public class CloseSocketTask extends TimerTask {
     @Override
     public void run() {
         try {
-            Printer.print("Heartbeat timeout: Closing socket");
-            connectionSocket.close();
-            synchronized (heartbeatObject) {
-                heartbeatObject.notify();
+            if (connectionSocket.isConnected()) {
+                Printer.print("Heartbeat timeout: Closing socket");
+                connectionSocket.close();
+
+                synchronized (heartbeatObject) {
+                    heartbeatObject.notify();
+                }
             }
         }
         catch (Exception e){
