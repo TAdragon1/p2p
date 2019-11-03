@@ -4,11 +4,11 @@ import java.util.TimerTask;
 public class CloseSocketTask extends TimerTask {
 
     private Socket connectionSocket;
-    private Object someObject;
+    private Object heartbeatObject;
 
-    public CloseSocketTask(Socket connectionSocket, Object someObject){
+    public CloseSocketTask(Socket connectionSocket, Object heartbeatObject){
         this.connectionSocket = connectionSocket;
-        this.someObject = someObject;
+        this.heartbeatObject = heartbeatObject;
     }
 
     @Override
@@ -16,8 +16,8 @@ public class CloseSocketTask extends TimerTask {
         try {
             Printer.print("Heartbeat timeout: Closing socket");
             connectionSocket.close();
-            synchronized (someObject) {
-                someObject.notify();
+            synchronized (heartbeatObject) {
+                heartbeatObject.notify();
             }
         }
         catch (Exception e){

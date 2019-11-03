@@ -6,16 +6,16 @@ public class HeartbeatTimer implements Runnable {
 
     private Socket connectionSocket;
     private PriorityQueue<Message> outgoingMessages;
-    private Object someObject;
+    private Object heartbeatObject;
 
     private static long NO_DELAY = 0;
     private static long DELAY = 10000;          // 10 seconds
     private static long TIMEOUT = 60000;        // 1 min
 
-    public HeartbeatTimer(Socket connectionSocket, PriorityQueue<Message> outgoingMessages, Object someObject){
+    public HeartbeatTimer(Socket connectionSocket, PriorityQueue<Message> outgoingMessages, Object heartbeatObject){
         this.connectionSocket = connectionSocket;
         this.outgoingMessages = outgoingMessages;
-        this.someObject = someObject;
+        this.heartbeatObject = heartbeatObject;
     }
 
     @Override
@@ -24,12 +24,12 @@ public class HeartbeatTimer implements Runnable {
             Timer timer = new Timer();
             timer.schedule(new HeartbeatTask(outgoingMessages), NO_DELAY);
             long start = System.currentTimeMillis();
-            CloseSocketTask closeSocketTask = new CloseSocketTask(connectionSocket, someObject);
+            CloseSocketTask closeSocketTask = new CloseSocketTask(connectionSocket, heartbeatObject);
             timer.schedule(closeSocketTask, TIMEOUT);
 
             while (true) {
-                synchronized (someObject) {
-                    someObject.wait();
+                synchronized (heartbeatObject) {
+                    heartbeatObject.wait();
                 }
                 if (!connectionSocket.isClosed()){
                     closeSocketTask.cancel();
@@ -47,7 +47,7 @@ public class HeartbeatTimer implements Runnable {
 
                     timer.schedule(new HeartbeatTask(outgoingMessages), delay);
                     start = System.currentTimeMillis();
-                    closeSocketTask = new CloseSocketTask(connectionSocket, someObject);
+                    closeSocketTask = new CloseSocketTask(connectionSocket, heartbeatObject);
                     timer.schedule(closeSocketTask, TIMEOUT);
                 }
                 else{

@@ -5,7 +5,7 @@ public class ReaderHelperThread implements Runnable {
 
     private String message;
     private PriorityQueue<Message> outgoingMessages;
-    private Object someObject;
+    private Object heartbeatObject;
     private Set<String> localFiles;
     private String localIP;
     private String fileTransferPort;
@@ -21,12 +21,12 @@ public class ReaderHelperThread implements Runnable {
 
     private static int FIRST_INDEX = 0;
 
-    public ReaderHelperThread(String message, PriorityQueue<Message> outgoingMessages, Object someObject,
+    public ReaderHelperThread(String message, PriorityQueue<Message> outgoingMessages, Object heartbeatObject,
                               Set<String> localFiles, String localIP, String fileTransferPort,
                               PriorityQueue<Message> peerWideForwarding){
         this.message = message;
         this.outgoingMessages = outgoingMessages;
-        this.someObject = someObject;
+        this.heartbeatObject = heartbeatObject;
         this.localFiles = localFiles;
         this.localIP = localIP;
         this.fileTransferPort = fileTransferPort;
@@ -44,14 +44,15 @@ public class ReaderHelperThread implements Runnable {
         }
         else if (message.equals(BEAT)){
             Printer.print("beat received");
-            synchronized (someObject) {
-                someObject.notify();
+            synchronized (heartbeatObject) {
+                heartbeatObject.notify();
             }
         }
         else if (firstCharOf(message) == Q){
             Printer.print("Query received: " + message);
 
             String queryData = message.split(":")[1];        //  "(query ID);(file name)"
+            
             String queryID = queryData.split(";")[0];
             String filename = queryData.split(";")[1];
 
@@ -64,7 +65,7 @@ public class ReaderHelperThread implements Runnable {
                 String port = fileTransferPort;
 
                 // Response format: "R:(query id);(peer IP:port);(filename)"
-                String response = "R:" + queryID + ";" + ip + ":" + port + ";" + filename;
+                String response = makeResponse(queryID, ip, port, filename);
                 synchronized (outgoingMessages) {
                     outgoingMessages.add(new Message(response, DEFAULT_PRIORITY));
                     outgoingMessages.notify();
@@ -112,4 +113,7 @@ public class ReaderHelperThread implements Runnable {
         return message.charAt(FIRST_INDEX);
     }
 
+    private static String makeResponse(String queryID, String ip, String port, String filename){
+        return "R:" + queryID + ";" + ip + ":" + port + ";" + filename;
+    }
 }
