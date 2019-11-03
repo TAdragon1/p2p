@@ -142,15 +142,15 @@ public class p2p {
                         Printer.print("Leaving");
 
                         for (Socket socket : neighbors) {
-                            try {
+//                            try {
                                 if (!socket.isClosed()) {
                                     socket.close();
                                 }
-                            }
-                            catch (Exception e){
+//                            }
+//                            catch (Exception e){
 //                                Printer.print("Caught exception: " + e);
 //                                e.printStackTrace();
-                            }
+//                            }
                         }
 
                         break;
@@ -159,15 +159,15 @@ public class p2p {
                         Printer.print("Exiting");
 
                         for (Socket socket : neighbors) {
-                            try {
+//                            try {
                                 if (!socket.isClosed()) {
                                     socket.close();
                                 }
-                            }
-                            catch (Exception e){
+//                            }
+//                            catch (Exception e){
 //                                Printer.print("Caught exception: " + e);
 //                                e.printStackTrace();
-                            }
+//                            }
                         }
 
                         if (!neighborWelcomeSocket.isClosed()){

@@ -101,9 +101,9 @@ public class ReaderHelperThread implements Runnable {
             }
             else {
                 Printer.print("Not at origin peer");
-                synchronized (outgoingMessages) {
-                    outgoingMessages.add(new Message(message, DEFAULT_PRIORITY));
-                    outgoingMessages.notify();
+                synchronized (peerWideForwarding) {
+                    peerWideForwarding.add(new Message(message, DEFAULT_PRIORITY));
+                    peerWideForwarding.notify();
                 }
             }
         }
