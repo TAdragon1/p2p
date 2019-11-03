@@ -15,8 +15,8 @@ public class CloseSocketTask extends TimerTask {
     public void run() {
         try {
             if (connectionSocket.isConnected()) {
-                Printer.print("Heartbeat timeout: Closing socket");
                 connectionSocket.close();
+                Printer.print("Heartbeat timeout: Closing socket");
 
                 synchronized (heartbeatObject) {
                     heartbeatObject.notify();
