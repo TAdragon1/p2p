@@ -64,7 +64,7 @@ public class p2p {
             ServerSocket neighborWelcomeSocket = new ServerSocket(nextPortNumber());
             NeighborServer neighborServer =
                     new NeighborServer(neighborWelcomeSocket, localFiles, peerIP,
-                            peerFileTransferPort, peerWideForwarding, neighborOutgoingQueues, peerWideFileTransferRequestSet);
+                            peerFileTransferPort, peerWideForwarding, neighborOutgoingQueues, peerWideFileTransferRequestSet, neighbors);
             Thread neighborTCPServerThread = new Thread(neighborServer);
             neighborTCPServerThread.start();
             Printer.print("Peer started, peer ip = " + peerIP);

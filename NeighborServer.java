@@ -10,6 +10,7 @@ public class NeighborServer implements Runnable{
     private PriorityQueue<Message> peerWideForwarding;
     private List<PriorityQueue<Message>> neighborOutgoingQueues;
     private HashSet<String> peerWideFileTransferRequestSet;
+    private LinkedList<Socket> neighbors;
 
     private static Comparator<Message> messageComparator = new Comparator<Message>() {
         @Override
@@ -23,7 +24,8 @@ public class NeighborServer implements Runnable{
     public NeighborServer(ServerSocket welcomeSocket, Set<String> localFiles, String peerIP,
                           String peerFileTransferPort, PriorityQueue<Message> peerWideForwarding,
                           List<PriorityQueue<Message>> neighborOutgoingQueues,
-                          HashSet<String> peerWideFileTransferRequestSet){
+                          HashSet<String> peerWideFileTransferRequestSet,
+                          LinkedList<Socket> neighbors){
         this.welcomeSocket = welcomeSocket;
         this.localFiles = localFiles;
         this.peerIP = peerIP;
@@ -31,6 +33,7 @@ public class NeighborServer implements Runnable{
         this.peerWideForwarding = peerWideForwarding;
         this.neighborOutgoingQueues = neighborOutgoingQueues;
         this.peerWideFileTransferRequestSet = peerWideFileTransferRequestSet;
+        this.neighbors = neighbors;
     }
 
     @Override
@@ -38,6 +41,8 @@ public class NeighborServer implements Runnable{
         try{
             while(true) {
                 Socket connectionSocket = welcomeSocket.accept();
+                neighbors.add(connectionSocket);
+
                 Printer.print("Accepted connection from another peer");
 
                 PriorityQueue<Message> neighborOutgoingMessages =
