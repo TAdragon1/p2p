@@ -69,6 +69,7 @@ public class ReaderHelperThread implements Runnable {
 
                 // Response format: "R:(query id);(peer IP:port);(filename)"
                 String response = makeResponse(queryID, ip, port, filename);
+
                 synchronized (outgoingMessages) {
                     outgoingMessages.add(new Message(response, DEFAULT_PRIORITY));
                     outgoingMessages.notify();

@@ -13,6 +13,7 @@ public class p2p {
 
     // Client Sockets
     private static LinkedList<Socket> neighbors = new LinkedList<>();
+    private static LinkedList<Socket> otherNeighbors = new LinkedList<>();
 
     // Neighbor Hostnames
     private static List<String> neighborHostnames = readInNeighbors();
@@ -64,7 +65,7 @@ public class p2p {
             ServerSocket neighborWelcomeSocket = new ServerSocket(nextPortNumber());
             NeighborServer neighborServer =
                     new NeighborServer(neighborWelcomeSocket, localFiles, peerIP,
-                            peerFileTransferPort, peerWideForwarding, neighborOutgoingQueues, peerWideFileTransferRequestSet, neighbors);
+                            peerFileTransferPort, peerWideForwarding, neighborOutgoingQueues, peerWideFileTransferRequestSet, otherNeighbors);
             Thread neighborTCPServerThread = new Thread(neighborServer);
             neighborTCPServerThread.start();
             Printer.print("Peer started, peer ip = " + peerIP);
@@ -154,6 +155,11 @@ public class p2p {
 //                                e.printStackTrace();
 //                            }
                         }
+                        for (Socket socket : otherNeighbors) {
+                            if (!socket.isClosed()){
+                                socket.close();
+                            }
+                        }
 
                         break;
                     case "exit":
@@ -170,6 +176,11 @@ public class p2p {
 //                                Printer.print("Caught exception: " + e);
 //                                e.printStackTrace();
 //                            }
+                        }
+                        for (Socket socket : otherNeighbors) {
+                            if (!socket.isClosed()){
+                                socket.close();
+                            }
                         }
 
                         if (!neighborWelcomeSocket.isClosed()){

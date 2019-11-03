@@ -22,11 +22,12 @@ public class PeerWideForwardingThread implements Runnable {
                     }
 
                     messageToBeForwarded = peerWideForwarding.remove();
-                }
-                for (PriorityQueue<Message> priorityQueue : neighborOutgoingQueues){
-                    synchronized (priorityQueue) {
-                        priorityQueue.add(messageToBeForwarded);
-                        priorityQueue.notify();
+
+                    for (PriorityQueue<Message> priorityQueue : neighborOutgoingQueues) {
+                        synchronized (priorityQueue) {
+                            priorityQueue.add(messageToBeForwarded);
+                            priorityQueue.notify();
+                        }
                     }
                 }
             }
