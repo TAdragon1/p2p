@@ -14,7 +14,7 @@ public class CloseSocketTask extends TimerTask {
     @Override
     public void run() {
         try {
-            if (connectionSocket.isConnected()) {
+            if (!connectionSocket.isClosed()) {
                 connectionSocket.close();
                 Printer.print("Heartbeat timeout: Closing socket");
 
@@ -24,8 +24,7 @@ public class CloseSocketTask extends TimerTask {
             }
         }
         catch (Exception e){
-            System.out.println("Caught exception: " + e);
-            e.printStackTrace();
+
         }
     }
 }

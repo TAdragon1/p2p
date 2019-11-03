@@ -56,8 +56,7 @@ public class HeartbeatTimer implements Runnable {
             }
         }
         catch (Exception e){
-            System.out.println("Caught exception: " + e);
-            e.printStackTrace();
+
         }
     }
 }
