@@ -60,7 +60,7 @@ public class WriterThread implements Runnable {
                         outToClient.writeBytes(messageData + "\n");
                     }
                     else if (messageData.equals(BEAT)){
-                        Printer.print("Sending beat");
+                        //Printer.print("Sending beat");
                         outToClient.writeBytes(messageData + "\n");
                     }
                     else{

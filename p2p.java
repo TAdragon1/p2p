@@ -179,7 +179,7 @@ public class p2p {
                             fileTransferWelcomeSocket.close();
                         }
 
-                        return;
+                        System.exit(0);
                     default:
                         Printer.print("The four command options are: Connect, Get FilenameWithExtension, Leave, or Exit");
                 }
