@@ -39,6 +39,7 @@ public class ReaderThread implements Runnable {
             {
                 BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
                 String message = inFromClient.readLine();
+                Printer.print("Reader received: " + message);
 
                 synchronized (receivedLog) {
                     if (!receivedLog.contains(message)) {        // New Incoming Message
