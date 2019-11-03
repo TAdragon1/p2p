@@ -54,8 +54,8 @@ public class WriterThread implements Runnable {
                                 Printer.print("Query sent");
                             }
                         } else if (messageData.equals(HEART)) {
-                            Printer.print("Sending Heart");
                             outToClient.writeBytes(messageData + "\n");
+                            Printer.print("Sending Heart");
                         } else if (messageData.equals(BEAT)) {
                             //Printer.print("Sending beat");
                             outToClient.writeBytes(messageData + "\n");
