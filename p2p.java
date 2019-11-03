@@ -37,12 +37,14 @@ public class p2p {
     private static int SECOND_INDEX = 1;
 
     private static PriorityQueue<Message> peerWideForwarding;
+    private static HashSet<String> peerWideFileTransferRequestSet;
 
     private static List<Thread> allThreads = new LinkedList<>();
 
     public static void main(String[] args){
         Scanner scan;
         peerWideForwarding = new PriorityQueue<>(INITIAL_CAPACITY, messageComparator);
+        peerWideFileTransferRequestSet = new HashSet<>();
 
         try {
             /* File Transfer Welcome Socket */
@@ -62,7 +64,7 @@ public class p2p {
             ServerSocket neighborWelcomeSocket = new ServerSocket(nextPortNumber());
             NeighborServer neighborServer =
                     new NeighborServer(neighborWelcomeSocket, localFiles, peerIP,
-                            peerFileTransferPort, peerWideForwarding, neighborOutgoingQueues);
+                            peerFileTransferPort, peerWideForwarding, neighborOutgoingQueues, peerWideFileTransferRequestSet);
             Thread neighborTCPServerThread = new Thread(neighborServer);
             neighborTCPServerThread.start();
             Printer.print("Peer started, peer ip = " + peerIP);
@@ -104,7 +106,7 @@ public class p2p {
                             ReaderThread neighborReader =
                                     new ReaderThread(neighbor, neighborReceivedLog, neighborOutgoingMessages,
                                             heartbeatObject, localFiles, peerIP,
-                                            peerFileTransferPort, peerWideForwarding);
+                                            peerFileTransferPort, peerWideForwarding, peerWideFileTransferRequestSet);
                             Thread neighborReaderThread = new Thread(neighborReader);
                             neighborReaderThread.start();
 

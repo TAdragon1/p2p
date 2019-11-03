@@ -1,3 +1,4 @@
+import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Set;
 
@@ -10,6 +11,7 @@ public class ReaderHelperThread implements Runnable {
     private String localIP;
     private String fileTransferPort;
     private PriorityQueue<Message> peerWideForwarding;
+    private HashSet<String> peerWideFileTransferRequestSet;
 
     private static String HEART = "Heart";
     private static String BEAT = "beat";
@@ -23,7 +25,7 @@ public class ReaderHelperThread implements Runnable {
 
     public ReaderHelperThread(String message, PriorityQueue<Message> outgoingMessages, Object heartbeatObject,
                               Set<String> localFiles, String localIP, String fileTransferPort,
-                              PriorityQueue<Message> peerWideForwarding){
+                              PriorityQueue<Message> peerWideForwarding, HashSet<String> peerWideFileTransferRequestSet){
         this.message = message;
         this.outgoingMessages = outgoingMessages;
         this.heartbeatObject = heartbeatObject;
@@ -31,6 +33,7 @@ public class ReaderHelperThread implements Runnable {
         this.localIP = localIP;
         this.fileTransferPort = fileTransferPort;
         this.peerWideForwarding = peerWideForwarding;
+        this.peerWideFileTransferRequestSet = peerWideFileTransferRequestSet;
     }
 
     @Override
@@ -95,7 +98,8 @@ public class ReaderHelperThread implements Runnable {
                 String port = ipAndPort.split(":")[1];
 
                 String transfer = "T:" + filename;
-                ConnectTransferThread connectTransferThread = new ConnectTransferThread(ip, port, transfer);
+                ConnectTransferThread connectTransferThread =
+                        new ConnectTransferThread(ip, port, transfer, peerWideFileTransferRequestSet);
                 Thread thread = new Thread(connectTransferThread);
                 thread.start();
             }

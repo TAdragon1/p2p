@@ -9,6 +9,7 @@ public class NeighborServer implements Runnable{
     private String peerFileTransferPort;
     private PriorityQueue<Message> peerWideForwarding;
     private List<PriorityQueue<Message>> neighborOutgoingQueues;
+    private HashSet<String> peerWideFileTransferRequestSet;
 
     private static Comparator<Message> messageComparator = new Comparator<Message>() {
         @Override
@@ -21,13 +22,15 @@ public class NeighborServer implements Runnable{
 
     public NeighborServer(ServerSocket welcomeSocket, Set<String> localFiles, String peerIP,
                           String peerFileTransferPort, PriorityQueue<Message> peerWideForwarding,
-                          List<PriorityQueue<Message>> neighborOutgoingQueues){
+                          List<PriorityQueue<Message>> neighborOutgoingQueues,
+                          HashSet<String> peerWideFileTransferRequestSet){
         this.welcomeSocket = welcomeSocket;
         this.localFiles = localFiles;
         this.peerIP = peerIP;
         this.peerFileTransferPort = peerFileTransferPort;
         this.peerWideForwarding = peerWideForwarding;
         this.neighborOutgoingQueues = neighborOutgoingQueues;
+        this.peerWideFileTransferRequestSet = peerWideFileTransferRequestSet;
     }
 
     @Override
@@ -49,7 +52,7 @@ public class NeighborServer implements Runnable{
                 HashSet<String> neighborReceivedLog = new HashSet<>();
                 ReaderThread neighborReader =
                         new ReaderThread(connectionSocket, neighborReceivedLog, neighborOutgoingMessages, heartbeatObject, localFiles,
-                                peerIP, peerFileTransferPort, peerWideForwarding);
+                                peerIP, peerFileTransferPort, peerWideForwarding, peerWideFileTransferRequestSet);
                 Thread neighborReaderThread = new Thread(neighborReader);
                 neighborReaderThread.start();
 
